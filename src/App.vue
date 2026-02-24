@@ -16,30 +16,6 @@ const FALLBACK_COVER = 'https://placehold.co/400x600/f1f5f9/0f172a?text=No+Cover
 const PAGE_SIZE = 24
 const MAX_RESULTS_WINDOW = 1000
 const SEARCH_DEBOUNCE_MS = 700
-const LIGHT_THEME = {
-  '--background': '220 23% 97%',
-  '--foreground': '222 47% 11%',
-  '--card': '0 0% 100%',
-  '--border': '214 32% 91%',
-  '--muted': '210 16% 93%',
-  '--primary': '174 77% 27%',
-  '--primary-foreground': '0 0% 100%',
-  '--accent': '25 95% 53%',
-  '--gradient-primary-rgb': '15, 118, 110',
-  '--gradient-accent-rgb': '234, 88, 12',
-}
-const DARK_THEME = {
-  '--background': '222 47% 7%',
-  '--foreground': '210 40% 98%',
-  '--card': '223 40% 10%',
-  '--border': '217 32% 17%',
-  '--muted': '217 33% 14%',
-  '--primary': '174 67% 40%',
-  '--primary-foreground': '222 47% 11%',
-  '--accent': '31 98% 60%',
-  '--gradient-primary-rgb': '20, 184, 166',
-  '--gradient-accent-rgb': '249, 115, 22',
-}
 
 const titleQuery = ref('')
 const authorQuery = ref('')
@@ -249,18 +225,10 @@ function resetToHome() {
 
 function applyTheme(darkEnabled) {
   const root = document.documentElement
-  const themeVars = darkEnabled ? DARK_THEME : LIGHT_THEME
 
   root.classList.toggle('dark', darkEnabled)
   root.setAttribute('data-theme', darkEnabled ? 'dark' : 'light')
   root.style.colorScheme = darkEnabled ? 'dark' : 'light'
-
-  Object.entries(themeVars).forEach(([name, value]) => {
-    root.style.setProperty(name, value)
-  })
-
-  document.body.style.backgroundColor = darkEnabled ? 'hsl(222 47% 7%)' : 'hsl(220 23% 97%)'
-  document.body.style.color = darkEnabled ? 'hsl(210 40% 98%)' : 'hsl(222 47% 11%)'
 }
 
 function persistTheme(darkEnabled) {
@@ -376,7 +344,9 @@ onBeforeUnmount(() => {
 <template>
   <div class="mx-auto max-w-7xl p-4 md:p-8">
     <Tabs v-model="tab">
-      <section class="glass-panel solid-panel p-5 md:p-7">
+      <section
+        class="rounded-xl border border-border/80 p-5 shadow-soft backdrop-blur [background-color:hsl(var(--card)/0.88)] md:p-7 dark:border-[hsl(var(--border)/0.95)] dark:bg-card dark:shadow-lg dark:[-webkit-backdrop-filter:none] dark:[backdrop-filter:none]"
+      >
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <p class="text-sm font-semibold uppercase tracking-[0.15em] text-[hsl(var(--foreground)/0.7)] dark:text-[hsl(var(--foreground))]">
@@ -418,7 +388,9 @@ onBeforeUnmount(() => {
       </section>
 
       <TabsContent value="catalog">
-        <section class="mt-6 glass-panel solid-panel p-5 md:p-7">
+        <section
+          class="mt-6 rounded-xl border border-border/80 p-5 shadow-soft backdrop-blur [background-color:hsl(var(--card)/0.88)] md:p-7 dark:border-[hsl(var(--border)/0.95)] dark:bg-card dark:shadow-lg dark:[-webkit-backdrop-filter:none] dark:[backdrop-filter:none]"
+        >
           <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div class="w-full">
               <div class="grid gap-3 md:grid-cols-2">
@@ -465,10 +437,14 @@ onBeforeUnmount(() => {
               @click="openBookDetails(book)"
             >
               <img :src="book.thumbnail" :alt="book.title" class="h-64 w-full object-cover" />
-              <div class="book-card-content flex flex-1 flex-col space-y-3 p-4">
+              <div class="flex flex-1 flex-col space-y-3 bg-transparent p-4 text-foreground dark:bg-[hsl(221_34%_16%)] dark:text-[hsl(210_40%_98%)]">
                 <div>
-                  <h2 class="book-card-title line-clamp-2 text-lg font-bold">{{ book.title }}</h2>
-                  <p class="book-card-authors mt-1 text-sm">{{ book.authors }}</p>
+                  <h2
+                    class="text-lg font-bold text-foreground [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [line-clamp:2] dark:text-[hsl(210_40%_98%)]"
+                  >
+                    {{ book.title }}
+                  </h2>
+                  <p class="mt-1 text-sm text-foreground/80 dark:text-[hsl(210_40%_92%)]">{{ book.authors }}</p>
                   <p class="mt-1 text-xs font-medium uppercase tracking-wide text-[hsl(var(--foreground)/0.72)] dark:text-[hsl(210_40%_88%)]">
                     {{ book.publishedDate }}
                   </p>
@@ -483,7 +459,7 @@ onBeforeUnmount(() => {
 
                 <Button
                   :variant="isFavorite(book.id) ? 'default' : 'outline'"
-                  class="card-favorite-btn mt-auto w-full gap-2"
+                  class="mt-auto w-full gap-2 dark:border-[hsl(217_24%_34%)] dark:bg-[hsl(221_34%_18%)] dark:text-[hsl(210_40%_98%)]"
                   @click.stop="toggleFavorite(book)"
                 >
                   <Heart class="h-4 w-4" :class="isFavorite(book.id) ? 'fill-current' : ''" />
@@ -535,13 +511,21 @@ onBeforeUnmount(() => {
               @click="openBookDetails(book)"
             >
               <img :src="book.thumbnail" :alt="book.title" class="h-64 w-full object-cover" />
-              <div class="book-card-content flex flex-1 flex-col space-y-3 p-4">
+              <div class="flex flex-1 flex-col space-y-3 bg-transparent p-4 text-foreground dark:bg-[hsl(221_34%_16%)] dark:text-[hsl(210_40%_98%)]">
                 <div>
-                  <h2 class="book-card-title line-clamp-2 text-lg font-bold">{{ book.title }}</h2>
-                  <p class="book-card-authors mt-1 text-sm">{{ book.authors }}</p>
+                  <h2
+                    class="text-lg font-bold text-foreground [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [line-clamp:2] dark:text-[hsl(210_40%_98%)]"
+                  >
+                    {{ book.title }}
+                  </h2>
+                  <p class="mt-1 text-sm text-foreground/80 dark:text-[hsl(210_40%_92%)]">{{ book.authors }}</p>
                 </div>
 
-                <Button variant="outline" class="card-favorite-btn mt-auto w-full gap-2" @click.stop="toggleFavorite(book)">
+                <Button
+                  variant="outline"
+                  class="mt-auto w-full gap-2 dark:border-[hsl(217_24%_34%)] dark:bg-[hsl(221_34%_18%)] dark:text-[hsl(210_40%_98%)]"
+                  @click.stop="toggleFavorite(book)"
+                >
                   <Heart class="h-4 w-4 fill-current" />
                   Удалить из избранного
                 </Button>
